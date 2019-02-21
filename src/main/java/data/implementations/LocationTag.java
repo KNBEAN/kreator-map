@@ -1,10 +1,10 @@
 package data.implementations;
 
-public class Location_Tag implements data.model.Location_Tag {
+public class LocationTag implements data.model.LocationTag {
     private int location_id;
     private String tag;
 
-    public Location_Tag(String tag, int locationId){
+    public LocationTag(String tag, int locationId){
         this.tag = tag;
         this.location_id = locationId;
     }
@@ -20,9 +20,9 @@ public class Location_Tag implements data.model.Location_Tag {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj.getClass() == Location_Tag.class){
-            obj = (Location_Tag) obj;
-            if (((Location_Tag) obj).getTag().equals(tag) && ((Location_Tag) obj).getLocation_id()==(location_id)) return true;
+        if (obj.getClass() == LocationTag.class){
+            obj = (LocationTag) obj;
+            if (((LocationTag) obj).getTag().equals(tag) && ((LocationTag) obj).getLocation_id()==(location_id)) return true;
         }
         return false;
     }

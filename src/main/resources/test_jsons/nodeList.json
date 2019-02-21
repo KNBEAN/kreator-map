@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "x": 100,
+    "y": 100,
+    "floor": 0,
+    "locationID": 1,
+    "hardToReach": false
+  },
+  {
+    "id": 2,
+    "x": 200,
+    "y": 100,
+    "floor": 1,
+    "locationID": -1,
+    "hardToReach": false
+  },
+  {
+    "id": 3,
+    "x": 100,
+    "y": 200,
+    "floor": 1,
+    "locationID": 2,
+    "hardToReach": false
+  }
+]

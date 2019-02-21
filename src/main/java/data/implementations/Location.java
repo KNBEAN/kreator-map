@@ -19,6 +19,11 @@ public class Location implements data.model.Location {
         this.name = name;
     }
 
+    public Location(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Location(int id, String name, String description) {
         this.id = id;
         this.name = name;

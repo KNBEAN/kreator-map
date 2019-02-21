@@ -4,6 +4,7 @@ package data.implementations;
 public class Floor implements data.model.Floor {
     private int floorNumber;
     private String floorName;
+    private String imagePath;
 
     public Floor(int floorNumber, String floorName) {
         this.floorNumber = floorNumber;
@@ -11,21 +12,17 @@ public class Floor implements data.model.Floor {
         this.imagePath = null;
     }
 
-
-
-    @Override
-    public String getImagePath() {
-        return imagePath;
-    }
-
-    private String imagePath;
-
     public Floor(int floorNumber, String floorName, String imagePath) {
         this.floorNumber = floorNumber;
         this.floorName = floorName;
         this.imagePath = imagePath;
     }
 
+
+    @Override
+    public String getImagePath() {
+        return imagePath;
+    }
 
     @Override
     public int getFloors() {

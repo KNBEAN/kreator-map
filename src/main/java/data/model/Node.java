@@ -30,4 +30,10 @@ public interface Node {
      * @return ID of location
      */
     int getLocationID();
+
+    /**
+     * Returns logical variable that informs if point of the map is hard to reach
+     * @return logical variable
+     */
+    boolean getHardToReach();
 }
