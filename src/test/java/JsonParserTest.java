@@ -1,7 +1,9 @@
 
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import data.JsonsParser;
 import data.implementations.*;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileNotFoundException;
@@ -13,19 +15,32 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class JsonParserTest {
 
-    private ClassLoader classLoader = getClass().getClassLoader();
+    private static String edgeList;
+    private static String floorList;
+    private static String locationList;
+    private static String locationPointsList;
+    private static String nodeList;
+    private static String quickAccessList;
+    private static String tagList;
+    private static String floorListDamaged;
 
-    private String edgeList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"edgeList.json").getPath();
-    private String floorList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"floorList.json").getPath();
-    private String locationList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"locationList.json").getPath();
-    private String locationPointsList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"locationPointsList.json").getPath();
-    private String nodeList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"nodeList.json").getPath();
-    private String quickAccessList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"quickAccessList.json").getPath();
-    private String tagList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"tagList.json").getPath();
 
+    @BeforeAll
+    static void initializePaths(){
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+        edgeList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"edgeList.json").getPath();
+        floorList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"floorList.json").getPath();
+        locationList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"locationList.json").getPath();
+        locationPointsList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"locationPointsList.json").getPath();
+        nodeList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"nodeList.json").getPath();
+        quickAccessList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"quickAccessList.json").getPath();
+        tagList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"tagList.json").getPath();
+        floorListDamaged = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"floorListDamaged.json").getPath();
+    }
 
     @Test
-    void shouldThrowError(){
+    void wrongFilePathPassed(){
         assertThrows(FileNotFoundException.class,()->{
             ArrayList<Edge> edges = JsonsParser.getEntityArrayList("edgeList.json",new TypeToken<List<Edge>>(){}.getType());
         });
@@ -100,5 +115,12 @@ public class JsonParserTest {
         ArrayList<QuickAccessLocation> quickAccessLocations = new ArrayList<>(Arrays.asList(quickAccessLocation,quickAccessLocation1));
 
         assertEquals(quickAccessLocations,JsonsParser.getEntityArrayList(quickAccessList,new TypeToken<List<QuickAccessLocation>>(){}.getType()));
+    }
+
+    @Test
+    void badFormattedJsonLoading(){
+        assertThrows(JsonSyntaxException.class,()->{
+            JsonsParser.getEntityArrayList(floorListDamaged,new TypeToken<List<Floor>>(){}.getType());
+        });
     }
 }
