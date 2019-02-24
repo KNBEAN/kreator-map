@@ -1,30 +1,47 @@
 package gui;
 
-import org.graphstream.graph.Graph;
+import com.intellij.uiDesigner.core.GridConstraints;
+import com.intellij.uiDesigner.core.GridLayoutManager;
+import com.intellij.uiDesigner.core.Spacer;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.geom.Point3;
 import org.graphstream.ui.swingViewer.ViewPanel;
-import org.graphstream.ui.view.View;
-import org.graphstream.ui.view.Viewer;
+import org.graphstream.ui.view.*;
+
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class MainWindow extends JFrame {
+public class MainWindow extends JFrame implements ViewerListener {
     private JPanel mainPanel;
     private JPanel mapPanel;
     private JPanel sidePanel;
-    private JButton addEdge;
+    private JButton addEdgeButton;
     private JButton removeButton;
     private JButton addNodeButton;
-    private SingleGraph graph;
-    private View view;
+
+
+    private String activeNodeID;
+    private MultiGraph graph;
+    private ViewPanel view;
+    private boolean loop = true;
+    private static int autoId = 0;
+
+    private activeMode currentState;
+
+    public static enum activeMode {
+        NONE, NODEADDITION, EDGEADDITION, DELETION
+    }
 
     public MainWindow(String s) throws HeadlessException {
         super(s);
         $$$setupUI$$$();
+        System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         getContentPane().add(mainPanel);
         addMenuBar();
         createUIComponents();
@@ -33,35 +50,101 @@ public class MainWindow extends JFrame {
         addNodeButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
+                currentState = activeMode.NODEADDITION;
                 super.mouseClicked(mouseEvent);
 
 
-                //         viewPanel1.add((Component) view);
+            }
+        });
+        addEdgeButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                currentState = activeMode.EDGEADDITION;
+                super.mouseClicked(mouseEvent);
+
+
+            }
+        });
+        removeButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                currentState = activeMode.DELETION;
+                super.mouseClicked(mouseEvent);
+
+
             }
         });
     }
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
-        graph = new SingleGraph("MapGrah");
-        graph.addNode("A");
-        graph.addNode("B");
-        graph.addNode("C");
-        graph.addEdge("AB", "A", "B");
-        graph.addEdge("BC", "B", "C");
-        graph.addEdge("CA", "C", "A");
-        graph = new SingleGraph("singleGraph");
-        Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
-        view = viewer.addDefaultView(false);
-        mapPanel = new JPanel();
-        ((ViewPanel) view).setPreferredSize(new Dimension(800, 500));
+        currentState = activeMode.NONE;
+        graph = new MultiGraph("MapGrah");
+        Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
+        view = viewer.addDefaultView(true);
 
 
-        mapPanel.add((Component) view);
-        // mapPanel.add((Component) view);
+        view.setPreferredSize(new Dimension(800, 500));
+        ViewerPipe viewerPipe = viewer.newViewerPipe();
+        viewerPipe.addAttributeSink(graph);
+        viewerPipe.addViewerListener(this);
+
+        graph.addAttribute("ui.stylesheet", "graph { fill-color: red; }");
+
+        viewerPipe.addAttributeSink(graph);
+        viewerPipe.addViewerListener(this);
+        viewerPipe.pump();
+
+        view.addMouseListener(new MouseListener() {
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+                switch (currentState) {
+                    case NODEADDITION: {
+                        Point3 p = view.getCamera().transformPxToGu(mouseEvent.getX(), mouseEvent.getY());
+                        addNode(p.x, p.y, 0);
+                    }
+
+                }
 
 
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent mouseEvent) {
+                if (currentState == activeMode.DELETION) {
+
+                }
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent mouseEvent) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {
+
+            }
+        });
+
+        new Thread(() -> {
+            while (loop) {
+                viewerPipe.pump();
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
     }
+
 
     /**
      * Method generated by IntelliJ IDEA GUI Designer
@@ -71,28 +154,29 @@ public class MainWindow extends JFrame {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        createUIComponents();
         mainPanel = new JPanel();
-        mainPanel.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        mainPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         mainPanel.setAlignmentX(0.1f);
-        mainPanel.add(mapPanel, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(294, 200), null, 0, false));
+        mapPanel = new JPanel();
+        mapPanel.setLayout(new BorderLayout(0, 0));
+        mainPanel.add(mapPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(294, 200), null, 0, false));
         sidePanel = new JPanel();
-        sidePanel.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
-        mainPanel.add(sidePanel, new com.intellij.uiDesigner.core.GridConstraints(0, 1, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, 1, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(20, 200), null, 0, false));
-        final com.intellij.uiDesigner.core.Spacer spacer1 = new com.intellij.uiDesigner.core.Spacer();
-        sidePanel.add(spacer1, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_VERTICAL, 1, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(43, 14), null, 0, false));
+        sidePanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPanel.add(sidePanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, 1, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(20, 200), null, 0, false));
+        final Spacer spacer1 = new Spacer();
+        sidePanel.add(spacer1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(43, 14), null, 0, false));
         final JPanel panel1 = new JPanel();
-        panel1.setLayout(new com.intellij.uiDesigner.core.GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
-        sidePanel.add(panel1, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_BOTH, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(43, 104), null, 0, false));
+        panel1.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        sidePanel.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(43, 104), null, 0, false));
         addNodeButton = new JButton();
         addNodeButton.setText("Add Node");
-        panel1.add(addNodeButton, new com.intellij.uiDesigner.core.GridConstraints(0, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        addEdge = new JButton();
-        addEdge.setText("Add Edge");
-        panel1.add(addEdge, new com.intellij.uiDesigner.core.GridConstraints(1, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel1.add(addNodeButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        addEdgeButton = new JButton();
+        addEdgeButton.setText("Add Edge");
+        panel1.add(addEdgeButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         removeButton = new JButton();
         removeButton.setText("Remove");
-        panel1.add(removeButton, new com.intellij.uiDesigner.core.GridConstraints(2, 0, 1, 1, com.intellij.uiDesigner.core.GridConstraints.ANCHOR_CENTER, com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK | com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW, com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel1.add(removeButton, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
@@ -116,5 +200,42 @@ public class MainWindow extends JFrame {
         setJMenuBar(menuBar);
     }
 
+
+    @Override
+    public void viewClosed(String s) {
+        loop = false;
+    }
+
+    @Override
+    public void buttonPushed(String s) {
+        System.out.println("Button pushed on node " + s);
+        if (currentState == activeMode.DELETION) {
+
+            graph.removeNode(s);
+            graph.removeEdge(s);
+        }
+        if (currentState == activeMode.EDGEADDITION) {
+            if (activeNodeID == null) {
+                activeNodeID = s;
+            } else {
+                graph.addEdge(Integer.toString(autoId), s, activeNodeID);
+                activeNodeID = s;
+                autoId++;
+            }
+
+        }
+
+    }
+
+    @Override
+    public void buttonReleased(String s) {
+        System.out.println("Button released on node " + s);
+    }
+
+    private void addNode(double x, double y, double z) {
+        Node node = graph.addNode(Integer.toString(autoId));
+        node.setAttribute("xyz", new double[]{x, y, z});
+        autoId++;
+    }
 
 }
