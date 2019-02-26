@@ -1,0 +1,16 @@
+graph{}
+
+node{
+    text-alignment: above;
+    text-size: 20;
+}
+
+node:clicked{
+    fill-color: red;
+}
+
+node:selected{
+    fill-color: blue;
+}
+
+edge{}
