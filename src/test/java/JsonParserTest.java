@@ -29,14 +29,14 @@ public class JsonParserTest {
     static void initializePaths(){
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-        edgeList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"edgeList.json").getPath();
-        floorList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"floorList.json").getPath();
-        locationList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"locationList.json").getPath();
-        locationPointsList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"locationPointsList.json").getPath();
-        nodeList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"nodeList.json").getPath();
-        quickAccessList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"quickAccessList.json").getPath();
-        tagList = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"tagList.json").getPath();
-        floorListDamaged = classLoader.getResource("test_jsons"+System.getProperty("file.separator")+"floorListDamaged.json").getPath();
+        edgeList = classLoader.getResource("test_jsons" +System.getProperty("file.separator")+"edgeList.json").getPath();
+        floorList = classLoader.getResource("test_jsons" +System.getProperty("file.separator")+"floorList.json").getPath();
+        locationList = classLoader.getResource("test_jsons" +System.getProperty("file.separator")+"locationList.json").getPath();
+        locationPointsList = classLoader.getResource("test_jsons" +System.getProperty("file.separator")+"locationPointsList.json").getPath();
+        nodeList = classLoader.getResource("test_jsons" +System.getProperty("file.separator")+"nodeList.json").getPath();
+        quickAccessList = classLoader.getResource("test_jsons" +System.getProperty("file.separator")+"quickAccessList.json").getPath();
+        tagList = classLoader.getResource("test_jsons" +System.getProperty("file.separator")+"tagList.json").getPath();
+        floorListDamaged = classLoader.getResource("test_jsons" +System.getProperty("file.separator")+"floorListDamaged.json").getPath();
     }
 
     @Test
