@@ -6,13 +6,20 @@ import com.intellij.uiDesigner.core.Spacer;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.geom.Point3;
+import org.graphstream.ui.swingViewer.DefaultView;
 import org.graphstream.ui.swingViewer.ViewPanel;
+import org.graphstream.ui.swingViewer.basicRenderer.SwingBasicGraphRenderer;
 import org.graphstream.ui.view.*;
 
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
 import java.util.Iterator;
 
 public class MainWindow extends JFrame implements ViewerListener {
@@ -26,7 +33,7 @@ public class MainWindow extends JFrame implements ViewerListener {
 
     private String activeNodeID;
     private MultiGraph graph;
-    private ViewPanel view;
+    private ViewerPipe viewerPipe;
     private boolean loop = true;
     private static int autoId = 0;
     private String css = "graph{\n" +
@@ -60,9 +67,12 @@ public class MainWindow extends JFrame implements ViewerListener {
         System.setProperty("org.graphstream.ui.renderer", "org.graphstream.ui.j2dviewer.J2DGraphRenderer");
         getContentPane().add(mainPanel);
         addMenuBar();
-        createUIComponents();
+        addListeners();
 
 
+    }
+
+    private void addListeners() {
         addNodeButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
@@ -123,24 +133,41 @@ public class MainWindow extends JFrame implements ViewerListener {
 
     private void createUIComponents() {
         // TODO: place custom component creation code here
-
         currentState = activeMode.NONE;
         graph = new MultiGraph("MapGrah");
         graph.setAttribute("ui.stylesheet", css);
-        Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-        view = viewer.addDefaultView(true);
-
-
-        view.setPreferredSize(new Dimension(800, 500));
-        ViewerPipe viewerPipe = viewer.newViewerPipe();
+        SwingBasicGraphRenderer renderer = new SwingBasicGraphRenderer();
+        Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
+        DefaultView view = (DefaultView) viewer.addDefaultView(false);
+        view.getCamera().setViewPercent(0.01);
+        viewerPipe = viewer.newViewerPipe();
         viewerPipe.addAttributeSink(graph);
         viewerPipe.addViewerListener(this);
+        mapPanel = new JPanel(new GridLayout()) {
+            @Override
+            public Dimension getPreferredSize() {
+                return new Dimension(1000, 600);
+            }
+        };
 
-        graph.addAttribute("ui.stylesheet", "graph { fill-mode: image-scaled-ratio-max; fill-image: url('/home/anna/Dokumenty/MapCreator/kreator-map/src/main/java/res/0.png'); }");
 
-        viewerPipe.addAttributeSink(graph);
-        viewerPipe.addViewerListener(this);
-        viewerPipe.pump();
+        //  mapPanel.setBorder(BorderFactory.createLineBorder(Color.blue, 5));
+
+
+        String path = "/home/anna/Dokumenty/MapCreator/kreator-map/src/main/java/res/0.png";
+        // String pat = ClassLoader.getSystemResource()"/home/anna/Dokumenty/MapCreator/kreator-map/src/main/java/res/0.png";
+
+        try {
+            final Image bg = ImageIO.read(new File(path));
+            view.setBackLayerRenderer((graphics, graph, px2Gu, widthPx, heightPx,
+                                       minXGu, minYGu, maxXGu, maxYGu) ->
+                    graphics.drawImage(bg, (int) minXGu, (int) minYGu, null));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+       mapPanel.add(view);
+
 
         view.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
@@ -207,6 +234,8 @@ public class MainWindow extends JFrame implements ViewerListener {
         new Thread(() -> {
             while (loop) {
                 viewerPipe.pump();
+                viewer.disableAutoLayout();
+
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
@@ -215,6 +244,8 @@ public class MainWindow extends JFrame implements ViewerListener {
 
             }
         }).start();
+
+
     }
 
 
@@ -226,11 +257,10 @@ public class MainWindow extends JFrame implements ViewerListener {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
+        createUIComponents();
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         mainPanel.setAlignmentX(0.1f);
-        mapPanel = new JPanel();
-        mapPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(mapPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(294, 200), null, 0, false));
         sidePanel = new JPanel();
         sidePanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
@@ -306,7 +336,11 @@ public class MainWindow extends JFrame implements ViewerListener {
         node.setAttribute("xyz", new double[]{x, y, z});
         node.setAttribute("ui.label", autoId);
 
-      autoId++;
+
+        for (Node n : graph.getNodeSet()) {
+            System.out.println(n.getId() + "  id  " + Arrays.toString((double[]) n.getAttribute("xyz")));
+        }
+        autoId++;
     }
 
 
