@@ -3,7 +3,7 @@ package data.model;
 import com.sun.istack.internal.Nullable;
 
 /**
- * This interface represents object of location. Location on the map represents real existing place,
+ * This interface represents object of location. LocationEntity on the map represents real existing place,
  * for ex. room, lobby or coffee shop ect.
  */
 

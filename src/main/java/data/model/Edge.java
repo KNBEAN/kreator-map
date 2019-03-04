@@ -1,7 +1,7 @@
 package data.model;
 
 /**
- * This interface represents directional edge on the graph. Edge is a object that make connection
+ * This interface represents directional edge on the graph. EdgeEntity is a object that make connection
  * between nodes.
  */
 public interface Edge {
@@ -38,6 +38,10 @@ public interface Edge {
      */
     int getLength();
 
+    /**
+     * Swap edge's nodes coordinates
+     * @return
+     */
     Edge swapEnds();
 
 }

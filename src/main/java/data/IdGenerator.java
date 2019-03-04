@@ -1,6 +1,6 @@
 package data;
 
-public abstract class Id_Generator {
+public abstract class IdGenerator {
     static int id = 0;
 
     static public int getId() {

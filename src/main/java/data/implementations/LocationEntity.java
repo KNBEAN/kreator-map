@@ -1,30 +1,31 @@
 package data.implementations;
 
-import data.Id_Generator;
+import data.IdGenerator;
+import data.model.Location;
 
-public class Location implements data.model.Location {
+public class LocationEntity implements Location {
 
     private int id;
     private String name;
     private String description;
 
-    public Location(String name, String description) {
-        this.id = Id_Generator.getId();
+    public LocationEntity(String name, String description) {
+        this.id = IdGenerator.getId();
         this.name = name;
         this.description = description;
     }
 
-    public Location(String name) {
-        this.id = Id_Generator.getId();
+    public LocationEntity(String name) {
+        this.id = IdGenerator.getId();
         this.name = name;
     }
 
-    public Location(int id, String name) {
+    public LocationEntity(int id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Location(int id, String name, String description) {
+    public LocationEntity(int id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -54,9 +55,9 @@ public class Location implements data.model.Location {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj.getClass() == Location.class){
-            obj = (Location) obj;
-            if (((Location) obj).getId()==id && ((Location) obj).getName().equals(name)) return true;
+        if (obj.getClass() == LocationEntity.class){
+            obj = (LocationEntity) obj;
+            if (((LocationEntity) obj).getId()==id && ((LocationEntity) obj).getName().equals(name)) return true;
         }
         return false;
     }

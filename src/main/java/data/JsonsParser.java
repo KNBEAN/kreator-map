@@ -9,6 +9,15 @@ import java.util.ArrayList;
 
 public class JsonsParser {
 
+    /**
+     * This method parse json to array list which has specific entity type.
+     * Json file has to contain only data of one entity.
+     * @param jsonPath Path to json file
+     * @param type Represents generic types, example: new TypeToken<List<EdgeEntity>>(){}.getType()
+     * @param <T>
+     * @return Array list of specific entity type
+     * @throws FileNotFoundException
+     */
     public static  <T> ArrayList<T> getEntityArrayList(String jsonPath, Type type) throws FileNotFoundException {
         ArrayList<T> arrayList = null;
         try {

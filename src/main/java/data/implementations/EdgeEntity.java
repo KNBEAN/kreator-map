@@ -1,30 +1,31 @@
 package data.implementations;
 
-import data.Id_Generator;
+import data.IdGenerator;
 import data.model.Node;
+import data.model.Edge;
 
-public class Edge implements data.model.Edge {
+public class EdgeEntity implements Edge {
 
     private int id;
     private int from;
     private int to;
     private int length;
 
-    public Edge(data.implementations.Node from_Node, data.implementations.Node to_Node){
-        id = Id_Generator.getId();
-        this.from = from_Node.getId();
-        this.to = to_Node.getId();
-        this.length = calculateLength(from_Node,to_Node);
+    public EdgeEntity(Node fromNode, Node toNode){
+        id = IdGenerator.getId();
+        this.from = fromNode.getId();
+        this.to = toNode.getId();
+        this.length = calculateLength(fromNode,toNode);
     }
 
-    public Edge(int from_id, int to_id, int length){
-        id = Id_Generator.getId();
-        this.from = from_id;
-        this.to = to_id;
+    public EdgeEntity(int from, int to, int length){
+        id = IdGenerator.getId();
+        this.from = from;
+        this.to = to;
         this.length = length;
     }
 
-    public Edge(int id, int from, int to, int length) {
+    public EdgeEntity(int id, int from, int to, int length) {
         this.id = id;
         this.from = from;
         this.to = to;
@@ -58,15 +59,15 @@ public class Edge implements data.model.Edge {
     }
 
     @Override
-    public Edge swapEnds(){
-        return new Edge(this.to,this.from,length);
+    public EdgeEntity swapEnds(){
+        return new EdgeEntity(this.to,this.from,length);
     }
 
     @Override
     public boolean equals(Object obj) {
-        Edge objectEdge = null;
-        if (obj.getClass() == Edge.class){
-            objectEdge = (Edge) obj;
+        EdgeEntity objectEdge = null;
+        if (obj.getClass() == EdgeEntity.class){
+            objectEdge = (EdgeEntity) obj;
         }
         if (objectEdge.getTo() == to && objectEdge.getFrom() == from
                 && objectEdge.length == length) return true;

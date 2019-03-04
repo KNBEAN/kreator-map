@@ -1,18 +1,19 @@
 package data.implementations;
 
+import data.model.Floor;
 
-public class Floor implements data.model.Floor {
+public class FloorEntity implements Floor {
     private int floorNumber;
     private String floorName;
     private String imagePath;
 
-    public Floor(int floorNumber, String floorName) {
+    public FloorEntity(int floorNumber, String floorName) {
         this.floorNumber = floorNumber;
         this.floorName = floorName;
         this.imagePath = null;
     }
 
-    public Floor(int floorNumber, String floorName, String imagePath) {
+    public FloorEntity(int floorNumber, String floorName, String imagePath) {
         this.floorNumber = floorNumber;
         this.floorName = floorName;
         this.imagePath = imagePath;
@@ -36,9 +37,9 @@ public class Floor implements data.model.Floor {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj.getClass() == Floor.class){
-            obj = (Floor) obj;
-            if (((Floor) obj).getFloors()==floorNumber && ((Floor) obj).getFloorName().equals(floorName)) return true;
+        if (obj.getClass() == FloorEntity.class){
+            obj = (FloorEntity) obj;
+            if (((FloorEntity) obj).getFloors()==floorNumber && ((FloorEntity) obj).getFloorName().equals(floorName)) return true;
         }
         return false;
     }
@@ -54,8 +55,8 @@ public class Floor implements data.model.Floor {
     }
 
     public String getFloorInfo(){
-        return "Floor: " + getFloors() + "\n" +
-                "Floor name: " + getFloorName() + "\n" +
+        return "FloorEntity: " + getFloors() + "\n" +
+                "FloorEntity name: " + getFloorName() + "\n" +
                 "Image path: " + getImagePath();
     }
 }

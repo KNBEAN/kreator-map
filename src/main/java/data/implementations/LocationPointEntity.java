@@ -2,19 +2,20 @@ package data.implementations;
 
 import data.model.Location;
 import data.model.Node;
+import data.model.LocationPoint;
 
-public class LocationPoint implements data.model.LocationPoint {
+public class LocationPointEntity implements LocationPoint {
 
     private int locationID;
     private int mapPointID;
 
 
-    public LocationPoint(int locationID, int mapPointID) {
+    public LocationPointEntity(int locationID, int mapPointID) {
         this.locationID = locationID;
         this.mapPointID = mapPointID;
     }
 
-    public LocationPoint(Node node, Location location) {
+    public LocationPointEntity(Node node, Location location) {
         this.mapPointID = node.getId();
         this.locationID = location.getId();
     }
@@ -31,8 +32,8 @@ public class LocationPoint implements data.model.LocationPoint {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj.getClass() == LocationPoint.class) {
-            LocationPoint locationPoint = (LocationPoint) obj;
+        if (obj.getClass() == LocationPointEntity.class) {
+            LocationPointEntity locationPoint = (LocationPointEntity) obj;
             if (locationPoint.getLocationID() == locationID && locationPoint.getMapPointID() == mapPointID) return true;
         }
         return false;
@@ -41,6 +42,6 @@ public class LocationPoint implements data.model.LocationPoint {
     @Override
     public String toString() {
         return "Map Point ID: " + mapPointID + "\n" +
-                "Location ID: " + locationID;
+                "LocationEntity ID: " + locationID;
     }
 }

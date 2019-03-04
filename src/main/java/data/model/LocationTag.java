@@ -13,7 +13,7 @@ public interface LocationTag {
     String getTag();
 
     /**
-     * Get location id connected to this LocationTag
+     * Get location id connected to this LocationTagEntity
      * @return id of location.
      */
     int getLocation_id();

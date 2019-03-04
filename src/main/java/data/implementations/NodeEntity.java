@@ -1,8 +1,9 @@
 package data.implementations;
 
-import data.Id_Generator;
+import data.IdGenerator;
+import data.model.Node;
 
-public class Node implements data.model.Node {
+public class NodeEntity implements Node {
 
     private int id;
     private int floor;
@@ -11,16 +12,16 @@ public class Node implements data.model.Node {
     private int locationID;
     private boolean hardToReach;
 
-    public Node(int x, int y, int floor, int locationId, boolean hardToReach){
-        id = Id_Generator.getId();
+    public NodeEntity(int x, int y, int floor, int locationId, boolean hardToReach){
+        id = IdGenerator.getId();
         this.x = x;
         this.y = y;
         this.floor = floor;
         this.locationID = locationId;
         this.hardToReach = hardToReach;
     }
-    public Node(int x, int y, int floor){
-        id = Id_Generator.getId();
+    public NodeEntity(int x, int y, int floor){
+        id = IdGenerator.getId();
         this.x = x;
         this.y = y;
         this.floor = floor;
@@ -28,7 +29,7 @@ public class Node implements data.model.Node {
         this.hardToReach = false;
     }
 
-    public Node(int floor, int x, int y, boolean hardToReach) {
+    public NodeEntity(int floor, int x, int y, boolean hardToReach) {
         this.floor = floor;
         this.x = x;
         this.y = y;
@@ -36,7 +37,7 @@ public class Node implements data.model.Node {
         this.hardToReach = hardToReach;
     }
 
-    public Node(int id, int x, int y, int floor, int locationID, boolean hardToReach) {
+    public NodeEntity(int id, int x, int y, int floor, int locationID, boolean hardToReach) {
         this.id = id;
         this.floor = floor;
         this.x = x;
@@ -77,8 +78,8 @@ public class Node implements data.model.Node {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj.getClass() != Node.class) return false;
-        Node objectNode = (Node) obj;
+        if (obj.getClass() != NodeEntity.class) return false;
+        NodeEntity objectNode = (NodeEntity) obj;
         if (objectNode.getX() == x
                 && objectNode.getFloor() == floor
                 && objectNode.getY() == y
@@ -90,10 +91,10 @@ public class Node implements data.model.Node {
     @Override
     public String toString() {
         return " ID: " + id + "\n" +
-                " Floor: "+ floor + "\n" +
+                " FloorEntity: "+ floor + "\n" +
                 " X: " + x + "\n" +
                 " Y: " + y + "\n" +
-                " Location ID: "+ locationID + "\n" +
+                " LocationEntity ID: "+ locationID + "\n" +
                 " Hard to reach: " + hardToReach;
     }
 }

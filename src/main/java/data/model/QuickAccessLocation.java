@@ -1,6 +1,6 @@
 package data.model;
 
-public interface Quick_Access_Location {
+public interface QuickAccessLocation {
 
     /**
      * @return id

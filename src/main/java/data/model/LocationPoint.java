@@ -1,7 +1,7 @@
 package data.model;
 
 /**
- * This interface represents object of LocationPoint. It combines Node with Location
+ * This interface represents object of LocationPointEntity. It combines NodeEntity with LocationEntity
  */
 public interface LocationPoint {
 
