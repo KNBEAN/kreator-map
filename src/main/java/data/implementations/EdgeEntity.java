@@ -4,6 +4,8 @@ import data.IdGenerator;
 import data.model.Node;
 import data.model.Edge;
 
+import java.util.Objects;
+
 public class EdgeEntity implements Edge {
 
     private int id;
@@ -72,6 +74,11 @@ public class EdgeEntity implements Edge {
         if (objectEdge.getTo() == to && objectEdge.getFrom() == from
                 && objectEdge.length == length) return true;
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, from, to, length);
     }
 
     @Override

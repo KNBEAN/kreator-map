@@ -2,15 +2,15 @@ package data.implementations;
 
 import data.model.Floor;
 
+import java.util.Objects;
+
 public class FloorEntity implements Floor {
     private int floorNumber;
     private String floorName;
     private String imagePath;
 
     public FloorEntity(int floorNumber, String floorName) {
-        this.floorNumber = floorNumber;
-        this.floorName = floorName;
-        this.imagePath = null;
+        this(floorNumber,floorName,null);
     }
 
     public FloorEntity(int floorNumber, String floorName, String imagePath) {
@@ -33,6 +33,11 @@ public class FloorEntity implements Floor {
     @Override
     public String floorName(int floor) {
         return floorName;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(floorNumber, floorName, imagePath);
     }
 
     @Override

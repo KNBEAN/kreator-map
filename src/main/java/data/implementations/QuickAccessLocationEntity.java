@@ -3,15 +3,15 @@ package data.implementations;
 import data.IdGenerator;
 import data.model.QuickAccessLocation;
 
+import java.util.Objects;
+
 public class QuickAccessLocationEntity implements QuickAccessLocation {
     private int id;
     private int location_id;
     private int quick_access_type;
 
     public QuickAccessLocationEntity(int location_id, int quick_access_type) {
-        this.id = IdGenerator.getId();
-        this.location_id = location_id;
-        this.quick_access_type = quick_access_type;
+        this(IdGenerator.getId(),location_id,quick_access_type);
     }
 
     public QuickAccessLocationEntity(int id, int location_id, int quick_access_type) {
@@ -42,6 +42,11 @@ public class QuickAccessLocationEntity implements QuickAccessLocation {
                     && ((QuickAccessLocationEntity) obj).getQuickAccessType() == (quick_access_type)) return true;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, location_id, quick_access_type);
     }
 
     @Override

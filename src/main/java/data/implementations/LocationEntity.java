@@ -3,6 +3,8 @@ package data.implementations;
 import data.IdGenerator;
 import data.model.Location;
 
+import java.util.Objects;
+
 public class LocationEntity implements Location {
 
     private int id;
@@ -10,19 +12,15 @@ public class LocationEntity implements Location {
     private String description;
 
     public LocationEntity(String name, String description) {
-        this.id = IdGenerator.getId();
-        this.name = name;
-        this.description = description;
+        this(IdGenerator.getId(),name,description);
     }
 
     public LocationEntity(String name) {
-        this.id = IdGenerator.getId();
-        this.name = name;
+        this(IdGenerator.getId(),name,null);
     }
 
     public LocationEntity(int id, String name) {
-        this.id = id;
-        this.name = name;
+        this(id,name,null);
     }
 
     public LocationEntity(int id, String name, String description) {
@@ -51,6 +49,11 @@ public class LocationEntity implements Location {
         return " ID: " + id + "\n" +
                 " Name: " + name + "\n" +
                 " Description: " + description;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, description);
     }
 
     @Override

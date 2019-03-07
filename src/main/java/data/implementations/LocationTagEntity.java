@@ -2,13 +2,15 @@ package data.implementations;
 
 import data.model.LocationTag;
 
+import java.util.Objects;
+
 public class LocationTagEntity implements LocationTag {
     private int location_id;
     private String tag;
 
-    public LocationTagEntity(String tag, int locationId){
+    public LocationTagEntity(int locationID, String tag){
+        this.location_id = locationID;
         this.tag = tag;
-        this.location_id = locationId;
     }
 
     @Override
@@ -27,5 +29,10 @@ public class LocationTagEntity implements LocationTag {
             if (((LocationTagEntity) obj).getTag().equals(tag) && ((LocationTagEntity) obj).getLocation_id()==(location_id)) return true;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(location_id, tag);
     }
 }

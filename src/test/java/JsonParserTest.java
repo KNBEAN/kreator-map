@@ -47,19 +47,6 @@ public class JsonParserTest {
     }
 
     @Test
-    void shouldNotThrowError(){
-        assertDoesNotThrow(()->{
-            JsonsParser.getEntityArrayList(edgeList,new TypeToken<List<EdgeEntity>>(){}.getType());
-            JsonsParser.getEntityArrayList(floorList,new TypeToken<List<FloorEntity>>(){}.getType());
-            JsonsParser.getEntityArrayList(locationList,new TypeToken<List<LocationEntity>>(){}.getType());
-            JsonsParser.getEntityArrayList(locationPointsList,new TypeToken<List<LocationPointEntity>>(){}.getType());
-            JsonsParser.getEntityArrayList(nodeList,new TypeToken<List<NodeEntity>>(){}.getType());
-            JsonsParser.getEntityArrayList(quickAccessList,new TypeToken<List<QuickAccessLocationEntity>>(){}.getType());
-            JsonsParser.getEntityArrayList(tagList,new TypeToken<List<LocationTagEntity>>(){}.getType());
-        });
-    }
-
-    @Test
     void shouldReturnAllEdges() throws FileNotFoundException {
         EdgeEntity edge1 = new EdgeEntity(1,1,2,100);
         EdgeEntity edge2 = new EdgeEntity(2,2,1,100);
@@ -115,6 +102,15 @@ public class JsonParserTest {
         ArrayList<QuickAccessLocationEntity> quickAccessLocations = new ArrayList<>(Arrays.asList(quickAccessLocation,quickAccessLocation1));
 
         assertEquals(quickAccessLocations,JsonsParser.getEntityArrayList(quickAccessList,new TypeToken<List<QuickAccessLocationEntity>>(){}.getType()));
+    }
+
+    @Test
+    void shouldReturnAllTagList() throws FileNotFoundException {
+        LocationTagEntity locationTagEntity = new LocationTagEntity(1,"sor");
+        LocationTagEntity locationTagEntity2 = new LocationTagEntity(2,"entry");
+        ArrayList<LocationTagEntity> locationTagEntities = new ArrayList<>(Arrays.asList(locationTagEntity,locationTagEntity2));
+
+        assertEquals(locationTagEntities,JsonsParser.getEntityArrayList(tagList,new TypeToken<List<LocationTagEntity>>(){}.getType()));
     }
 
     @Test

@@ -4,6 +4,8 @@ import data.model.Location;
 import data.model.Node;
 import data.model.LocationPoint;
 
+import java.util.Objects;
+
 public class LocationPointEntity implements LocationPoint {
 
     private int locationID;
@@ -16,8 +18,7 @@ public class LocationPointEntity implements LocationPoint {
     }
 
     public LocationPointEntity(Node node, Location location) {
-        this.mapPointID = node.getId();
-        this.locationID = location.getId();
+        this(location.getId(),node.getId());
     }
 
     @Override
@@ -37,6 +38,11 @@ public class LocationPointEntity implements LocationPoint {
             if (locationPoint.getLocationID() == locationID && locationPoint.getMapPointID() == mapPointID) return true;
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(locationID, mapPointID);
     }
 
     @Override
