@@ -25,7 +25,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        //frame = new MainWindow(appName);
+        frame = new MainWindow(appName);
         frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
         frame.addWindowListener(new WindowAdapter() {
             @Override
