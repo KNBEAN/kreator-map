@@ -29,8 +29,9 @@ public class MainWindow extends JFrame implements ViewerListener {
     private JButton addEdgeButton;
     private JButton removeButton;
     private JButton addNodeButton;
+    private JScrollPane scrollPane;
 
-
+    private Image backgroundImage;
     private String activeNodeID;
     private MultiGraph graph;
     private ViewerPipe viewerPipe;
@@ -136,38 +137,36 @@ public class MainWindow extends JFrame implements ViewerListener {
         currentState = activeMode.NONE;
         graph = new MultiGraph("MapGrah");
         graph.setAttribute("ui.stylesheet", css);
+
         SwingBasicGraphRenderer renderer = new SwingBasicGraphRenderer();
         Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
         DefaultView view = (DefaultView) viewer.addDefaultView(false);
         view.getCamera().setViewPercent(0.01);
+
+
         viewerPipe = viewer.newViewerPipe();
         viewerPipe.addAttributeSink(graph);
         viewerPipe.addViewerListener(this);
-        mapPanel = new JPanel(new GridLayout()) {
-            @Override
-            public Dimension getPreferredSize() {
-                return new Dimension(1000, 600);
-            }
-        };
+
+        mapPanel = new JPanel();
+        mapPanel = new JPanel(new GridLayout());
 
 
-        //  mapPanel.setBorder(BorderFactory.createLineBorder(Color.blue, 5));
+        String path = getClass().getClassLoader().getResource("0.png").getPath();
 
-
-        String path = "/home/anna/Dokumenty/MapCreator/kreator-map/src/main/java/res/0.png";
-        // String pat = ClassLoader.getSystemResource()"/home/anna/Dokumenty/MapCreator/kreator-map/src/main/java/res/0.png";
 
         try {
-            final Image bg = ImageIO.read(new File(path));
+            backgroundImage = ImageIO.read(new File(path));
             view.setBackLayerRenderer((graphics, graph, px2Gu, widthPx, heightPx,
                                        minXGu, minYGu, maxXGu, maxYGu) ->
-                    graphics.drawImage(bg, (int) minXGu, (int) minYGu, null));
+                    graphics.drawImage(backgroundImage, 0, 0, null));
         } catch (IOException e) {
             e.printStackTrace();
         }
+        view.setPreferredSize(new Dimension(backgroundImage.getWidth(null), backgroundImage.getHeight(null)));
 
-       mapPanel.add(view);
-
+        scrollPane = new JScrollPane(view);
+        mapPanel.add(scrollPane);
 
         view.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
@@ -261,7 +260,9 @@ public class MainWindow extends JFrame implements ViewerListener {
         mainPanel = new JPanel();
         mainPanel.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         mainPanel.setAlignmentX(0.1f);
+        mapPanel.setLayout(new BorderLayout(0, 0));
         mainPanel.add(mapPanel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(294, 200), null, 0, false));
+        mapPanel.add(scrollPane, BorderLayout.CENTER);
         sidePanel = new JPanel();
         sidePanel.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         mainPanel.add(sidePanel, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, 1, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, new Dimension(20, 200), null, 0, false));
