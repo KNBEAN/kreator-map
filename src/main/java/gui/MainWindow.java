@@ -141,17 +141,16 @@ public class MainWindow extends JFrame implements ViewerListener {
         SwingBasicGraphRenderer renderer = new SwingBasicGraphRenderer();
         Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
         DefaultView view = (DefaultView) viewer.addDefaultView(false);
-        view.getCamera().setViewPercent(0.01);
+        view.getCamera().setViewPercent(0.001);
+        view.getCamera().setGraphViewport(0,0,100000,100000);
 
 
         viewerPipe = viewer.newViewerPipe();
         viewerPipe.addAttributeSink(graph);
         viewerPipe.addViewerListener(this);
 
-        mapPanel = new JPanel();
+
         mapPanel = new JPanel(new GridLayout());
-
-
         String path = getClass().getClassLoader().getResource("0.png").getPath();
 
 
@@ -168,6 +167,8 @@ public class MainWindow extends JFrame implements ViewerListener {
         scrollPane = new JScrollPane(view);
         mapPanel.add(scrollPane);
 
+
+
         view.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
 
@@ -177,7 +178,9 @@ public class MainWindow extends JFrame implements ViewerListener {
             public void mousePressed(MouseEvent mouseEvent) {
                 switch (currentState) {
                     case NODEADDITION: {
-                        Point3 p = view.getCamera().transformPxToGu(mouseEvent.getX(), mouseEvent.getY());
+                        int xShift = scrollPane.getHorizontalScrollBar().getValue();
+                        int yShift = scrollPane.getVerticalScrollBar().getValue();
+                        Point3 p = view.getCamera().transformPxToGu(mouseEvent.getX()-xShift, mouseEvent.getY()-yShift);
                         addNode(p.x, p.y, 0);
                     }
 
@@ -191,6 +194,8 @@ public class MainWindow extends JFrame implements ViewerListener {
 
                 if (currentState == activeMode.DELETION) {
                     try {
+
+
                         Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
@@ -234,6 +239,8 @@ public class MainWindow extends JFrame implements ViewerListener {
             while (loop) {
                 viewerPipe.pump();
                 viewer.disableAutoLayout();
+
+
 
                 try {
                     Thread.sleep(100);
