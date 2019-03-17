@@ -6,6 +6,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.ui.geom.Point3;
+import org.graphstream.ui.graphicGraph.GraphicElement;
 import org.graphstream.ui.swingViewer.DefaultView;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.swingViewer.basicRenderer.SwingBasicGraphRenderer;
@@ -142,7 +143,7 @@ public class MainWindow extends JFrame implements ViewerListener {
         Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_GUI_THREAD);
         DefaultView view = (DefaultView) viewer.addDefaultView(false);
         view.getCamera().setViewPercent(0.001);
-        view.getCamera().setGraphViewport(0,0,100000,100000);
+
 
 
         viewerPipe = viewer.newViewerPipe();
@@ -151,7 +152,9 @@ public class MainWindow extends JFrame implements ViewerListener {
 
 
         mapPanel = new JPanel(new GridLayout());
+
         String path = getClass().getClassLoader().getResource("0.png").getPath();
+
 
 
         try {
@@ -163,14 +166,24 @@ public class MainWindow extends JFrame implements ViewerListener {
             e.printStackTrace();
         }
         view.setPreferredSize(new Dimension(backgroundImage.getWidth(null), backgroundImage.getHeight(null)));
-
         scrollPane = new JScrollPane(view);
-        mapPanel.add(scrollPane);
 
+
+        mapPanel.add(scrollPane);
+        view.getCamera().setGraphViewport(0,0,backgroundImage.getWidth(null),backgroundImage.getHeight(null));
+        mapPanel.addComponentListener(new ComponentAdapter()
+        {
+            public void componentResized(ComponentEvent evt) {
+                if (getWidth()>=backgroundImage.getWidth(null)){
+                    scrollPane.setSize(backgroundImage.getWidth(null),getHeight());
+                }
+            }
+        });
 
 
         view.addMouseListener(new MouseListener() {
             public void mouseClicked(MouseEvent e) {
+
 
             }
 
